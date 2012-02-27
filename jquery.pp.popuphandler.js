@@ -3,7 +3,6 @@
 * Copyright (c) 2012, Priit Pirita, atirip@yahoo.com
 */
 
-ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQC9R4jpDJxkQANp72K1ONRpD2iUAXfIDIR6l+0HySY4ni4Zv7FhWvgirmifSPzXjSGe731tXLMLSoMSMfBjA0d83BnCdCAzvwuvjWgCHj42eR1T7pah86lkhReS4GLChtDiYLXu9z6Dc77O/YdN+MJ6WBZLvUbb7H0qWSorFmtIW41zTVXhJt31h/WhXyx5O1baoP+O0D1JBhF99PsrEUl2HtlBLUT6dO/kXN7sZctgQocrri0h1ZY4TXx2m7LVZo0tAe4Bz4Xpry7Aw7JZG2/lL6V3hvCCQeB6J/scyGLXX8bdJmyCDyGN0d87EQTp7wzen6KsCAl+aaq5mBzA1LNh atirip@gmail.com
 +function(handler){ this[handler] = (function() {
 
 	var X,Y,
