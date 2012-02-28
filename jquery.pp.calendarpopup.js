@@ -402,7 +402,7 @@ jQuery.pp.calendar = (function() {
 		pluginMethods : {
 			//set: function(val) { 
 			set: function() { 
-				args = Array.prototype.slice.call(arguments)			
+				var args = Array.prototype.slice.call(arguments);			
 				return this.each(function() {
 					$(this).trigger('value',  args);
 				});

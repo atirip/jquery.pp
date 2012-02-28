@@ -85,8 +85,8 @@
 		},
 		
 		renderSelects: function(selected, reverse) {
+			selected = this.pad.attr('data-value');
 			var html = '',
-				selected = this.pad.attr('data-value'),
 				render = function(i) {
 					var hover = this.values[i] == selected ? ' ' + this.settings.selectedClass + ' ' + this.settings.hoverClass : '';
 					if ( hover ) {
@@ -207,7 +207,7 @@
 		
 		pluginMethods : {
 			set: function() { 
-				args = Array.prototype.slice.call(arguments)			
+				var args = Array.prototype.slice.call(arguments);			
 				return this.each(function() {
 					$(this).trigger('value',  args);
 				});
