@@ -1,0 +1,214 @@
+
+###jquery.pp.js
+
+Contains common code for all other modules. Usable stand-aolen functions are:
+
+	id() - creates running number id
+	modifierPressed(event) - true if modifier key was presses
+	format(str, arguments) - format("this {0} poor man {1} sprintf", "is", "simple");
+
+###jquery.pp.dim.js
+
+Dimensions module. All functions are final and can be used independently
+
+__$(selector).ppBoxModel()__ - returns 'border-box' or 'content-box'
+
+
+__$(selector).ppOuterWidth()__
+__$(selector).ppInnerWidth()__
+__$(selector).ppOuterHeight()__
+__$(selector).ppInnerHeight()__
+
+Theres a mess of various width's/height's we can query
+	$().width();
+	$().outerWidth();
+	$().prop('clientWidth');
+	$().prop('offsetWidth');
+	
+The sole meaningful are $().width(), $().outerWidth(), which give you _real_ innerWidth and outerWidth, but it is not
+easy to _set_ them, so I wrote methods which in get mode encapsulate jQuery ones, but in set mode sets correct values
+_reagerdless_ of box model used.
+
+
+__$(selector).ppFitInto(selector, margins)__ 
+
+adjust _this_ size so it fits exactly inside _selector_ 
+	<selector>
+		<this style= width 100%, height 100%>
+		</this>
+	</selector>
+
+	
+__$(selector).ppEmbrace(selector, margins)__ 
+
+adjust _this_ size so _selector_ fits exactly inside _this_
+	<this>
+		<selector>
+		</selector>
+	</this>
+
+
+__$(selector).ppEqual(selector, margins)__ 
+
+makes _this_ and _selector_ same size
+
+
+__$(selector).ppCss(arguments)__
+
+Wrapper of jQuery .css(), adds support for innerWidth, innerHeiht, outerWidth, outerHeight pseudo css values.
+
+
+__$(selector).ppIsInside(outer)__
+
+if _this_ is completely inside _outer_
+
+
+__$(selector).ppIsOverlapping(selector)__
+
+if _this_ and _selector_ overlap
+
+
+__$(selector).ppWithLayout(callback, context)
+
+if _this_ is hidden (display:none), allows temporarily to restore _this_ dimensions and in callback to do something with it, pass context if
+you wish to change callbacks this.
+
+
+__$(selector).ppDimensions(margins)__
+
+returns _this_ dimensions as following { top: , left: , right: , bottom: , width: , height:  }, NB! top & left are $.offset() ( not $.posiyion() )
+
+
+__$(selector).ppPosRelativeTo(p, where, box)__
+
+p - at which direction (jQuery.pp.verticalProperties or jQuery.pp.horizontalProperties)
+where - float that specifies position
+
+returns coordinate for this to be placed according to the _box_
+
+Example for some and meaningful values for when p = jQuery.pp.horizontalProperties:
+-1 _this_ right edge touches _box_ left edge
+0 _this_ left edge touches _box_ left edge
+0.5 _this_ and box are horizontally centered
+1 _this_ right edge touches _box's_ right edge
+2 _this_ left edge touches _box's_ right edge
+
+
+__$(selector).ppFitBoxTo(viewport, box, options)__
+
+Higher order positioning function.
+Position _box_ inside _viewport_ accoording to _options_ which may be (shown are defaults):
+
+	v: true - vertical or horizontal
+	where: 2, - where as in ppPosRelativeTo
+	flip: function(p) { 
+		return 1 - p; 
+	}, - function which calculates alternative _where_ when _box_ does not fit fully in _viewport_ default is to flip to the other side
+	adjust: true - in flipped _box_ still does not fit, do we adjust its size to fit
+	
+	 
+
+__$(selector).ppPositionAsDropbox(viewport, box, options )__
+
+Positions box inside viewport as dropbox.
+- first drops down
+- if it does not fit fully then tries to position up
+- if still does not fit, then adsjusts size
+- first tries to align left's
+- if it does not fit, flips and tries to adjust right's
+
+
+###jquery.pp.calendar.js
+
+What's left of Kevin Luck's original datepicker. I need only essential calendar rendering functions.
+
+calendar = new __jquery.pp.calendar__({
+	selected: ...,
+	month: undefined,
+	year: undefined,
+	startDate: undefined,
+	endDate	: undefined,
+	monthFormat: 'mmmm',
+	yearFormat: 'yyyy',
+	cellspacing: 2,			
+	calendarClass: 'calendar',
+	todayClass: 'today',
+	disabledClass: 'disabled',
+	otherClass: 'other'			
+})
+
+functions are pretty self explanatory
+
+__setDates({
+	month:  ...,
+	year: ...,
+	startDate: ...,
+	endDate	: ...					
+})__
+
+__renderCalendar(month, year)__
+
+renders calendar as HTML table like this (yes, without any mandatory end-tags)
+
+<table cellspacing="2" class="calendar">
+	<thead>
+		<tr>
+			<th title="Monday">M
+			<th title="Tuesday">T
+			....
+		
+	<tbody>
+		<tr>
+			<td data-pp-date="30.01.2012" class="other">30
+			<td data-pp-date="31.01.2012" class="other">31
+			<td data-pp-date="01.02.2012" >1
+			<td data-pp-date="02.02.2012" class="today">2
+			<td data-pp-date="03.02.2012" class="disabled">3
+			...
+</table>
+
+__render(what)__
+
+where what is 
+	undefined for month, year specifed in options or setDates or current month
+	+M, -M, +Y, -Y for paging rendering by months or years 
+	
+	return {
+		month: formatted (options.monthFormat) month string,
+		year: formatted (optons.yearFormat) year string,
+
+		prevMonth: if allowed then -M 
+		nextMonth: if alloved then +M
+		prevYear:  if allowed then -Y
+		nextYear: if allowed then +Y
+		
+		calendar: renderCalendar() 
+	}
+
+###jquery.pp.popuphandler.js
+
+Handles events for popup's. Popup solution consts 2 mandatory elements: _pad_ - something to click to activate popup and _box_ - the popped up box,
+third one _elem_ is collection of elements in the box which can be clicked.
+
+Popuphandler handles events for mouse and for touch devices - which behave differently.
+
+Mouse device
+	- mousedeown on the pad activates box immediately
+	- mousedrag while button is pressed down overs over elem (which receive mouseover events) and when button is released, fires select event, popup closes
+	- mouseup on the pad and mouseover over elem  fires mouseover events on elem and cklick fires select event, popup closes
+	- click on pad toggles box
+	- click ouside pad or box closes box
+	- window resize closes box
+	- window scroll optinally closes box
+	- has basic keyboard support (esc to close, enter to selecet, up-down to move between elem)
+
+Touch device
+	- only tuouchend without touchmove opens box, touchstart and then touchmove on pad does nothing, 
+	- no mouseover events fired on elem
+	- click on pad toggles
+	- click ouside pad or box closes box
+	- window resize closes box
+	- window scroll optinally closes box
+		
+		
+		
