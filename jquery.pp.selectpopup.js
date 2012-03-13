@@ -12,7 +12,7 @@
 			activeClass: "active",
 			hoverClass: "hover",
 			boxClass: "popup",
-			selectClass: "select",
+			elemClass: "select",
 			selectedClass: "selected"
 		};
 		
@@ -92,7 +92,7 @@
 					if ( hover ) {
 						selected = -1;
 					}
-					return jQuery.pp.format(this.settings.html, this.settings.selectClass + hover, this.values[i], this.options[i]);
+					return jQuery.pp.format(this.settings.html, this.settings.elemClass + hover, this.values[i], this.options[i]);
 				};
 
 			for( var i = 0; i < this.options.length; i++) {
@@ -213,10 +213,10 @@
 				});
 			},
 
-			init : function( constructor, pop, options ) {
+			init : function( constructor, options ) {
 				options = options || {};
 				return this.each(function() {
-					new constructor($(this), pop, options);
+					new constructor($(this), options);
 				});
 			}
 			
