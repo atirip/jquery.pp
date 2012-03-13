@@ -7,18 +7,19 @@ Contains common code for all other modules. Using any module requires jquery.pp.
 
 #### Small utilities
 
-__id()__ creates running number id
-__modifierPressed(event)__ true if modifier key was presses
-__format(str, arguments)__ format("this {0} poor man {1} sprintf", "is", "simple") returns "this is poor man simple sprintf".
+__id()__ creates running number id 
+__modifierPressed(event)__ true if modifier key was presses  
+__format(str, arguments)__ format("this {0} poor man {1}   sprintf", "is", "simple") returns "this is poor man simple sprintf".
 
 #### Dimensions
 
 Theres a lot of various width's/height's we can query:
+`
 $().width()
 $().outerWidth()
 $().prop('clientWidth')
 $().prop('offsetWidth')
-	
+`	
 The sole meaningful of tjem are width() and outerWidth(), which give you _real_ inner and outer width, but it is not
 easy to _set_ them, so I wrote methods which in get mode encapsulate jQuery ones, but in set mode sets correct values
 _reagerdless_ of box model used.
@@ -34,19 +35,19 @@ Use them as JQuery (outer)width/(outer)height
 __$(selector).ppFitInto(selector, margins)__ 
 
 adjust _this_ size so it fits exactly inside _selector_ 
-	<selector>
+	`<selector>
 		<this style= width 100%, height 100%>
 		</this>
-	</selector>
+	</selector>`
 
 	
 __$(selector).ppEmbrace(selector, margins)__ 
 
 adjust _this_ size so _selector_ fits exactly inside _this_
-	<this>
+	`<this>
 		<selector>
 		</selector>
-	</this>
+	</this>`
 
 
 __$(selector).ppEqual(selector, margins)__ 
@@ -122,7 +123,7 @@ Positions box inside viewport as dropbox.
 Standardized method to add jQuery plugins for jquery.pp. The real and main purpose of doing that is to allow communication between all jquery.pp UI plugins. I created this when I needed to have custom scrollbar support on custom select and event handlers started to clash (as long as you click on scrollbar, those click need not to affect select himself f.e).
 
 __Basic jquery.pp module pattern:__
-
+`
 +function(handler){ this[handler] = (function() {
 	var variable = null;
 
@@ -169,7 +170,7 @@ __Basic jquery.pp module pattern:__
 	return constructor;
 })(); 
 jQuery.pp.register(handler, this[handler]);
-}('myplugin'); // the name of the plugin which will be Sentensecased for name so MyPluGin here connverts yo ppMyplugin
+}('myplugin'); // the name of the plugin which will be Sentensecased for name so MyPluGin here connverts yo ppMyplugin`
 
 And afterwards you call your plugin like this:
 
@@ -233,7 +234,7 @@ __next()__ called when down key is pressed, expected bahaviour is to return $(pr
 Simple demo code how one makes a fully working popup plugin using basic pattern described above.
 
 In constructor I create box, attach it to the <body> tag and initialize handler. Then I add requied methods. In show I create some divs as list inside box, call popupHandler to add event handlers to the box, position that box next to pad and show it.
-
+`
 function constructor(pad, options, ...) {
 	this.settings = $.extend({
 		hoverClass = 'hover'
@@ -272,12 +273,12 @@ constructor.prototype = {
 		this.box.hide().empty();
 	},		
 }
-
+`
 Thats minimum needed to create a very simplepopup.
 
 ### Simple Select Popup (jquery.pp.selectpopup.js)
 
-Mimics html <select>. 
+Mimics html `<select>`. 
 
 Options with their default values:
 	prefix: "pp-"
@@ -347,7 +348,7 @@ __setDates__({
 __renderCalendar(month, year)__
 
 renders calendar as HTML table like this (yes, without any mandatory end-tags)
-
+`
 <table cellspacing="2" class="calendar">
 	<thead>
 		<tr>
@@ -364,7 +365,7 @@ renders calendar as HTML table like this (yes, without any mandatory end-tags)
 			<td data-pp-date="03.02.2012" class="disabled">3
 			...
 </table>
-
+`
 __render(what)__
 
 where what is 
