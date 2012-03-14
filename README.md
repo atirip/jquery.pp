@@ -11,6 +11,16 @@ Whats so special of creating a simple popup then?
 * things are different - mouse interface behaves not like touch interface
 
 
+
+Demo
+---
+[live demo](http://atirip.github.com/jquery.pp/index.html)
+
+
+
+Man
+---
+
 ### Common (jquery.pp.js)
 
 Contains common code for all other modules. Using any module requires jquery.pp.js 
