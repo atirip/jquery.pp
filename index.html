@@ -1,88 +1,205 @@
 <!DOCTYPE html>
-<html>
-<head>
-  <meta charset='utf-8'>
+<title> jquery.pp demo </title>
 
-  <title>atirip/jquery.pp @ GitHub</title>
+<link rel="stylesheet" href="http://jqpp.local/jquery.pp.scrollbar.css">
 
-  <style type="text/css">
-    body {
-      margin-top: 1.0em;
-      background-color: #5a9bac;
-      font-family: Helvetica, Arial, FreeSans, san-serif;
-      color: #000000;
-    }
-    #container {
-      margin: 0 auto;
-      width: 700px;
-    }
-    h1 { font-size: 3.8em; color: #a56453; margin-bottom: 3px; }
-    h1 .small { font-size: 0.4em; }
-    h1 a { text-decoration: none }
-    h2 { font-size: 1.5em; color: #a56453; }
-    h3 { text-align: center; color: #a56453; }
-    a { color: #a56453; }
-    .description { font-size: 1.2em; margin-bottom: 30px; margin-top: 30px; font-style: italic;}
-    .download { float: right; }
-    pre { background: #000; color: #fff; padding: 15px;}
-    hr { border: 0; width: 80%; border-bottom: 1px solid #aaa}
-    .footer { text-align:center; padding-top:30px; font-style: italic; }
-  </style>
-</head>
+<style>
+	body {
+		height: 2000px;
+	}
 
-<body>
-  <a href="https://github.com/atirip/jquery.pp"><img style="position: absolute; top: 0; right: 0; border: 0;" src="http://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub" /></a>
+	div {
+		margin: 0;
+		padding: 0;
+		
+	}
+	
+	h1 {
+		padding-top: 50px;
+		font-size: 18px;
+		clear: left;
+	}
+	div.pad {
+		margin: 10px;
+		margin-left: 100px;
+		padding: 10px;
+		font-weight: bold;
+		border: 1px #DDD solid;
+		float: left;
+		cursor: pointer;
+	}
+	
+	div.alert {
+		border: 1px #DDD solid;
+		width: 200px;
+		background: #EEE;
+	}	
+	
+	div.button {
+		border: 1px #DDD solid;
+		width: 60px;
+		margin: 0 auto;
+		font-weight: bold;
+		font-size: 13px;
+		line-height: 18px;
+		margin-bottom: 18px;
+		background: #FFF;
+		cursor: pointer;
+	}
+		
+	div.alert h3 {
+	}
 
-  <div id="container">
+	div.alert h3,
+	div.alert p,
+	div.button {
+		text-align: center;
+	}
 
-    <div class="download">
-      <a href="https://github.com/atirip/jquery.pp/zipball/master">
-        <img border="0" width="90" src="https://github.com/images/modules/download/zip.png"></a>
-      <a href="https://github.com/atirip/jquery.pp/tarball/master">
-        <img border="0" width="90" src="https://github.com/images/modules/download/tar.png"></a>
-    </div>
+	.cover {
+		background: red;
+		opacity: 0.5;
+		z-index: 100;
+	}
+	
+	.pp-select {
+		padding: 10px;
+	}
 
-    <h1><a href="https://github.com/atirip/jquery.pp">jquery.pp</a>
-      <span class="small">by <a href="https://github.com/atirip">atirip</a></span></h1>
+	.pp-selected {
+		background: #EEE;
+	}
 
-    <div class="description">
-      
-    </div>
+	.pp-hover {
+		color: white;
+		background: #AAA;
+	}
 
-    
+	.pp-popup {
+		border: 2px #AAA solid;
+		background: #FFF;
+		outline: none;
+		-webkit-box-shadow: 0px 1px 5px 0px rgba(0,0,0,.3);
+		   -moz-box-shadow: 0px 1px 5px 0px rgba(0,0,0,.3);
+				box-shadow: 0px 1px 5px 0px rgba(0,0,0,.3);
+	}
+	
+	table.pp-calendar th,
+	table.pp-calendar td {
+		padding: 6px 9px;
+		text-align: center;
 
-    
+	}
+	
+</style>
 
-    
+<h1>Simple Popup</h1>
+<div id=simple class=pad>toggle</div>
 
-    
+<h1>Select Popup</h1>
+<div id=select class=pad>select</div>
 
-    
-      <h2>Authors</h2>
-      <p>Priit Pirita (atirip@gmail.com)<br/>      </p>
-    
+<h1>Calendar Popup</h1>
+<div id=calendar class=pad>select</div>
 
-    
-      <h2>Contact</h2>
-      <p>Priit Pirita (atirip@gmail.com)<br/>      </p>
-    
 
-    <h2>Download</h2>
-    <p>
-      You can download this project in either
-      <a href="https://github.com/atirip/jquery.pp/zipball/master">zip</a> or
-      <a href="https://github.com/atirip/jquery.pp/tarball/master">tar formats.
-    </p>
-    <p>You can also clone the project with <a href="http://git-scm.com">Git</a>
-      by running:
-      <pre>$ git clone git://github.com/atirip/jquery.pp</pre>
-    </p>
+<div id=modal style='display:none'>
+	<div class=alert>
+		<h3>Alert!</h3>
+		<div>
+			<p>This is modal</p>
+			<div class=button>ok</div>
+		</div>
+	</div>
+</div>
 
-    <div class="footer">
-      get the source code on GitHub : <a href="https://github.com/atirip/jquery.pp">atirip/jquery.pp</a>
-    </div>
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+<script src="https://raw.github.com/atirip/jquery.pp/master/jquery.pp.js"></script>
+<script src="https://raw.github.com/atirip/jquery.pp/master/jquery.pp.calendarpopup.js"></script>
+<script src="https://raw.github.com/atirip/jquery.pp/master/jquery.pp.selectpopup.js"></script>
+<script src="https://raw.github.com/atirip/jquery.pp/master/jquery.pp.multiclick.js"></script>
+<script src="https://raw.github.com/atirip/jquery.pp/master/jquery.pp.scrollbar.js"></script>
+<script src="https://raw.github.com/atirip/jquery.pp/master/jquery.pp.modal.js"></script>
+<script src="https://raw.github.com/vitch/jquery-methods/master/date.js"></script>
 
-  </div>
+<script>
 
-</body>
-</html>
++function(handler){ this[handler] = (function() {
+	function constructor(element) {
+		this.pad = $(element);	
+		this.box = $('' +
+		'<div style="position:absolute; display:none; outline:none" id="' + $.pp.id() + '">' +
+		'<div class=alert>' +
+		'	<h3>Popup!</h3>' +
+		'	<div>' +
+		'		<p>message</p>' +
+		'		<div class=button>ok</div>' +
+		'	</div>' +
+		'</div>' +
+		'</div>').appendTo('body');					
+		this.elem = $('.button');		
+		this.popupHandler = new jQuery.pp.popupHandler(this, {
+			closeOnClickOutside: true
+		});		
+		this.popupHandler.addEventHandlers();
+	}
+	
+	constructor.prototype = {
+
+		show: function() {
+			this.box.ppWithLayout(function() {
+				this.box.ppPosTo(0.5, 0.2);
+			}, this);
+			this.box.show();
+		},
+
+		hide: function() {
+			this.box.hide();
+		},		
+
+		pluginMethods : {
+			init : function( constructor, options) {
+				options = options || {};
+				return this.each(function() {
+					new constructor($(this), options);
+				});
+			}
+		}
+	};
+	
+	return constructor;
+})(); 
+jQuery.pp.register(handler, this[handler]);
+}('popup'); 
+
+$('#simple').ppPopup();
+
+$('#modal').ppModal().trigger('show');
+
+
+$('#select').ppSelectpopup({
+	options: ['first', 'second', 'third', 'fourth'],					
+	values: [11,22,33,44],
+	selected: 22,
+	target: "#select", 	
+	onChange: function(value, text, user) {
+	}
+});
+
+$('#calendar').ppCalendarpopup({
+	onOpen: function() {
+		var d = (new Date).zeroTime();
+		return {
+			selected: d,
+			target: "#calendar",
+			month: d.getMonth(),
+			year: d.getFullYear()
+		};
+	},
+	onChange: function(date) {
+	}
+});
+
+
+</script>
+
