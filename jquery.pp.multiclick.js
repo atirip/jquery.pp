@@ -1,3 +1,8 @@
+/*
+* MIT Licensed
+* Copyright (c) 2012, Priit Pirita, atirip@yahoo.com
+*/
+
 
 (function($){ // secure $ jQuery alias
 

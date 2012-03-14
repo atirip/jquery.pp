@@ -159,8 +159,15 @@ Positions box inside viewport as dropbox.
 * first drops down
 * if it does not fit fully then tries to position up
 * if still does not fit, then adsjusts size
-* first tries to align left's
+* first tries to align left's* 
 * if it does not fit, flips and tries to adjust right's
+
+<code>ppCover(className, id)</code>
+
+Creates "cover" over existing content, if content is smaller than window, then over window. 
+_className_ - ppCover creates a DIV tag and adds className to style it  
+_id_ - optional, add id if needed
+
 
 #### jquery.pp plugins register
 
@@ -476,6 +483,24 @@ hideOnResize: true
 window: null  
 prefix: "pp-"  			
 html:</code>  same as in Simple Select Popup  
+
+
+### Simple Modal Popup (jquery.pp.modal.js)
+
+Positions _selector_ according to page and adds "cover" behind it. Handles closing.
+
+Usage:   
+<code>var modal = $(selector).ppModal(…options…);  
+modal.trigger('show');  
+modal.trigger('hide');</code>
+	
+Options (with defaults):
+
+<code>verticalPosition: 0.2</code>
+<code>horizontalPosition: 0.5</code> look <code>ppFitBoxTo</code> for explanation
+<code>coverClass: "cover"</code> class to be added for "cover"
+<code>closeButtonSelector: '.button'</code> clicking on selector will close modal, when no selector then clicking on the modal itself will close it
+<code>closeOnClickOutside: false</code> if close modal by clicking on the "cover"
 
 
 

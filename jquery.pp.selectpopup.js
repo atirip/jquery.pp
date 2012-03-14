@@ -39,7 +39,7 @@
 		}
 		this.settings = $.extend(this.settings, classNames);
 
-		this.box = $('<div style="position:absolute;" id="' + $.pp.id() +'" class="' + this.settings.boxClass + '"></div>').appendTo(this.settings.appendTo);					
+		this.box = $('<div style="position:absolute; display:none;" id="' + $.pp.id() +'" class="' + this.settings.boxClass + '"></div>').appendTo(this.settings.appendTo);					
 		this.elem = null;		
 		this.popup = new jQuery.pp.popupHandler(this, {
 			hideOnScroll: this.settings.hideOnScroll,

@@ -288,7 +288,7 @@ jQuery.pp.calendar = (function() {
 		this.settings = $.extend(this.settings, classNames);
 		
 		this.pad = $(pad);
-		this.box = $('<div style="position:absolute;" id="' + $.pp.id() +'" class="' + this.settings.boxClass + '"></div>').appendTo(this.settings.appendTo);	
+		this.box = $('<div style="position:absolute; display:none;" id="' + $.pp.id() +'" class="' + this.settings.boxClass + '"></div>').appendTo(this.settings.appendTo);	
 		this.cal = new $.pp.calendar( $.extend(this.settings, this.settings.onOpen ? this.settings.onOpen() : {}) );
 		
 		this.elem = null;

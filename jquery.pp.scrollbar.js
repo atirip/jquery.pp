@@ -1,8 +1,8 @@
+/*
+* MIT Licensed
+* Copyright (c) 2012, Priit Pirita, atirip@yahoo.com
+*/
 
-
-
-
-/*SCROLLBAR*/
 +function(handler){ this[handler] = (function() {
 
 	var eventName = '.pp',

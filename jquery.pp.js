@@ -607,7 +607,7 @@ jQuery.fn.ppPositionAsDropbox = function(viewport, pad, options ) {
 
 jQuery.ppCover = function(className, id) {
 
-	var cover = $('<div style="position:absolute;" id="' + (id || $.pp.id()) +'" class="' + (className || '') + '"></div>').appendTo('body'),
+	var cover = $('<div style="position:absolute;" id="' + (id || 'cover-' + $.pp.id()) +'" class="' + (className || '') + '"></div>').appendTo('body'),
 		wd = $(window).ppDimensions(),
 		bd = $('html').ppDimensions();
 
