@@ -484,6 +484,14 @@ jQuery.fn.ppPosRelativeTo = function(p, where, box) {
 	return result;
 };
 
+jQuery.fn.ppPosTo = function(horiz, vert, box) {
+	return this.css({
+		top: this.ppPosRelativeTo(jQuery.pp.verticalProperties, vert).top,
+		left: this.ppPosRelativeTo(jQuery.pp.horizontalProperties, horiz).left
+	});
+};
+
+
 jQuery.pp.fitBoxFlip = function(p) { 
 	return 1 - p; 
 };
@@ -597,7 +605,20 @@ jQuery.fn.ppPositionAsDropbox = function(viewport, pad, options ) {
 	return this;
 };
 
+jQuery.ppCover = function(className, id) {
 
+	var cover = $('<div style="position:absolute;" id="' + (id || $.pp.id()) +'" class="' + (className || '') + '"></div>').appendTo('body'),
+		wd = $(window).ppDimensions(),
+		bd = $('html').ppDimensions();
+
+	cover.css({
+		top: 0,
+		left: 0,
+		width: Math.max(wd.width, bd.width),
+		height: Math.max(wd.height, bd.height)	
+	});
+	return cover;
+};
 
 
 +function(handler){ this[handler] = (function() {
@@ -625,6 +646,7 @@ jQuery.fn.ppPositionAsDropbox = function(viewport, pad, options ) {
 					window: false,
 					hideOnScroll: false,
 					hideOnResize: true,
+					closeOnClickOutside: true,
 					keycodeTranslator: function(code, event) { return code == 32 ? 13 : code; },
 					keyUpHandler: function(code, event) { return true; },
 					keyDownHandler: function(code, event) { return true; }
@@ -723,25 +745,30 @@ jQuery.fn.ppPositionAsDropbox = function(viewport, pad, options ) {
 				Y = event ? event.pageY : 0;
 			}
 
-			$(document).bind(jQuery.pp.downStartEvent + eventName, function(event) {
-				if ( supremeHandlerExists.call(self) ) {
-					return true;
-				}
-				// click outside will hide
-				if ( !jQuery.pp.modifierPressed(event) ) {
-					self.hide();
-				}
-			});
+		
+			if ( self.settings.closeOnClickOutside ) {
+				$(document).bind(jQuery.pp.downStartEvent + eventName, function(event) {
+					if ( supremeHandlerExists.call(self) ) {
+						return true;
+					}
+					// click outside will hide
+					if ( !jQuery.pp.modifierPressed(event) ) {
+						self.hide();
+					}
+				});
+			}
 			
-			$(document).bind(jQuery.pp.upEndEvent + eventName, function(event) {
-				if ( supremeHandlerExists.call(self) ) {
-					return true;
-				}
-				// drag outside and up will hide
-				if ( !jQuery.pp.modifierPressed(event) ) {
-					self.hide();
-				}
-			});
+			if ( self.settings.closeOnClickOutside ) {
+				$(document).bind(jQuery.pp.upEndEvent + eventName, function(event) {
+					if ( supremeHandlerExists.call(self) ) {
+						return true;
+					}
+					// drag outside and up will hide
+					if ( !jQuery.pp.modifierPressed(event) ) {
+						self.hide();
+					}
+				});
+			}
 
 			if ( !jQuery.pp.touchDevice ) {
 				$(document).one(jQuery.pp.moveEvent + eventName, function(event) {
