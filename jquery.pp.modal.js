@@ -3,7 +3,6 @@
 * Copyright (c) 2012, Priit Pirita, atirip@yahoo.com
 */
 
-
 +function(handler){ this[handler] = (function() {
 
 	function constructor(element, options) {		
