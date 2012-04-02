@@ -108,13 +108,13 @@
 		*/
 		var b = $.browser;
 		if ( b.webkit ) {
-			return bubblingCounter == 1 ? 500 : 50;
+			return bubblingCounter === 1 ? 500 : 50;
 		} else if ( b.mozilla ) {
-			return bubblingCounter == 1 ? 125 : 25;
+			return bubblingCounter === 1 ? 125 : 25;
 		} else if ( window.opera ) {
-			return bubblingCounter == 1 ? 350 : 150;
+			return bubblingCounter === 1 ? 350 : 150;
 		} else {
-			return bubblingCounter == 1 ? 125 : 15;
+			return bubblingCounter === 1 ? 125 : 15;
 		}
 
 	}
@@ -242,8 +242,8 @@
 	}
 
 	function scrollBarSpaces(w, c, s) { // what, container, scrollarea
-		var V = ('h' != w) ? scrollBarSpace(verticalProperties, c, s) : 0;
-		var H = ('v' != w) ? scrollBarSpace(horizontalProperties, c, s) : 0;
+		var V = ('h' !== w) ? scrollBarSpace(verticalProperties, c, s) : 0;
+		var H = ('v' !== w) ? scrollBarSpace(horizontalProperties, c, s) : 0;
 		return {v: V, h: H};
 	}
 	
@@ -256,9 +256,9 @@
 		
 		// 2. scrollarea
 		s.css(p.overflowY, 'scroll').css(p.width, c[p.width]() + systemScrollbarWidth() - mySpace).css(p.paddingRight, parseInt(c.css(p.paddingRight), 10) + mySpace);
-		if ( setHeight )
+		if ( setHeight ) {
 			s.css(p.height, c[p.height]());
-
+		}
 		// 3. scrollbar height
 		b[p.height]( c.prop(p.clientHeight) - otherSpace - sumCSSProps(b, [p.paddingTop, p.paddingBottom, p.borderTopWidth, p.borderBottomWidth, p.marginTop, p.marginBottom]) );
 
@@ -272,8 +272,8 @@
 	function onChange(w, c, s) { // what, container, scrollarea
 		var sbspaces = scrollBarSpaces(w, c, s);
 		// last argument - if only one bar, set both - width & height on scrollarea, but when both do only one
-		( 'h' != w ) && change(verticalProperties, c, s, sbspaces.v, sbspaces.h, 'b' == w ? false : true);
-		( 'v' != w ) && change(horizontalProperties, c, s, sbspaces.h, sbspaces.v, 'b' == w ? false : true);
+		( 'h' !== w ) && change(verticalProperties, c, s, sbspaces.v, sbspaces.h, 'b' === w ? false : true);
+		( 'v' !== w ) && change(horizontalProperties, c, s, sbspaces.h, sbspaces.v, 'b' === w ? false : true);
 	}
 
 	function addScrollBar(p, container, c, s, settings, scrollWindowStyle, w) { // props, container, $(container), scrollarea
@@ -322,8 +322,9 @@
 			var pe = !!s.css('pointerEvents');
 			
 			// this trick does not work on both bars - scrollbar needs to be on "clear" surface
-			if ( 'b' == w )
+			if ( 'b' === w ) {
 				settings.wheelOnBarForIE = false;
+			}
 				
 			if ( !settings.disableWheelOnBar && (pe || settings.wheelOnBarForIE) ) {
 				if ( pe ) {
@@ -398,22 +399,24 @@
 				var what = '';
 				var sY = container.css('overflowY');
 				var sX = container.css('overflowX');					
-				( 'auto' == sY || 'scroll' == sY ) && ( what += 'v' );
-				( 'auto' == sX || 'scroll' == sX ) && ( what += 'h' );
-				if ( 2 == what.length )
+				( 'auto' === sY || 'scroll' === sY ) && ( what += 'v' );
+				( 'auto' === sX || 'scroll' === sX ) && ( what += 'h' );
+				if ( 2 === what.length ) {
 					what = 'b';
-				else if ( 0 === what.length )
+				} else if ( 0 === what.length ) {
 					return false;
+				}
 				
-				// prevent double add
-				if ( container.find('div.pp-scroll-area').length )
+				// prevent double add and Lion
+				if ( container.find('div.pp-scroll-area').length || !systemScrollbarWidth() ) {
 					return false;
-
+				}
+				
 				// so far, ignore only IE6, add native bars and that's it. I COULD make it work in IE6 but so far didn't bother
 				if (settings.ignore) {
-					if ( 'h' != what)
+					if ( 'h' !== what)
 						container.css('overflowY', 'scroll');
-					if ( 'v' != what)
+					if ( 'v' !== what)
 						container.css('overflowX', 'scroll');
 					return false;
 				}
@@ -430,15 +433,18 @@
 				// copy container classes to scroll area
 				s.addClass(container.prop("className"));
 				
-				if ( 'v' == what )
+				if ( 'v' === what ) {
 					s.css('overflowX', 'hidden');
-				if ( 'h' == what )
+				}
+				if ( 'h' === what ) {
 					s.css('overflowY', 'hidden');
-
-				if ( 'h' != what )
+				}
+				if ( 'h' !== what ) {
 					addScrollBar(verticalProperties, container, c, s, settings, scrollWindowStyle, what);
-				if ( 'v' != what )
+				}
+				if ( 'v' !== what ) {
 					addScrollBar(horizontalProperties, container, c, s, settings, scrollWindowStyle, what);
+				}
 
 
 				$(container).resize(function(event) {
@@ -460,14 +466,14 @@
 							var sOff = s.offset();
 							var sT = 0, sL = 0, cT = 0, cL = 0;
 							
-							if ( ('h' != what) && sPos.left !== 0 ) {
+							if ( ('h' !== what) && sPos.left !== 0 ) {
 								sT = sOff.top;
 								sL = sOff.left - sPos.left;
 								cT = 0;
 								cL = sPos.left;							
 							}
 
-							if ( ('v' != what) && sPos.top !== 0 ) {
+							if ( ('v' !== what) && sPos.top !== 0 ) {
 								sT = sOff.top - sPos.top;
 								sL = sOff.left;
 								cT = sPos.top;
@@ -545,7 +551,8 @@
 		
 			// to access original content
 			content: function() { 
-				return this.find('div.pp-scroll-area');
+				var c = this.find('div.pp-scroll-area');
+				return c.length ? c : this; // return self if not added
 			},
 
 			// to access scrollbar
