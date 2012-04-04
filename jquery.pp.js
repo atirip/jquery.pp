@@ -522,7 +522,7 @@ jQuery.fn.ppFitBoxTo = function(viewport, pad, options ) {
 	
 	var p = options.v ? jQuery.pp.verticalProperties : jQuery.pp.horizontalProperties,
 		pos = this.ppPosRelativeTo(p, options.where, pad),
-		dim = this.ppDimensions(),
+		dim = this.ppDimensions(true),
 		pos2dim = function(pos) {
 			var pd = {}, w = 1;
 			pd[p.top]= pos[p.top];
