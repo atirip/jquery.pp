@@ -643,6 +643,7 @@ jQuery.ppCover = function(className, id) {
 			try {
 				this.parent = parent;
 				this.settings = $.extend({
+					addEventHandlers: true,
 					window: false,
 					hideOnScroll: false,
 					hideOnResize: true,
@@ -655,7 +656,8 @@ jQuery.ppCover = function(className, id) {
 			} catch(e) {
 				return;
 			}
-
+			this.hasKeybHandlers = true;
+			
 			var self = this;
 			if ( this.parent.pad ) {
 				this.parent.pad.bind(jQuery.pp.downStartEvent + eventName, function(event) {
@@ -674,7 +676,9 @@ jQuery.ppCover = function(className, id) {
 					return jQuery.pp.cancelEvent(event); 
 				});
 			}
-			self.addEventHandlers();
+			if ( this.settings.addEventHandlers ) {
+				this.addEventHandlers();
+			}
 		},
 
 		destroy: function() {
@@ -813,6 +817,17 @@ jQuery.ppCover = function(className, id) {
 			return this;
 		},
 
+		removeEventHandlers: function() {
+			this.removeBoxHandlers();
+			this.removeElemHandlers();
+			return this;
+		},
+
+		removeBoxHandlers: function() {
+			this.parent.box.unbind(jQuery.pp.downStartEvent + eventName + ' ' + jQuery.pp.upEndEvent + eventName);
+			this.removeKeybHandlers();
+		},
+		
 		addBoxHandlers: function(addKeyb) {
 			
 			if ( !this.parent.box ) {
@@ -820,16 +835,15 @@ jQuery.ppCover = function(className, id) {
 			}
 				
 			var self = this;
-
-			this.parent.box.unbind(eventName);
+			this.removeBoxHandlers();
 			
-			this.parent.box.bind(jQuery.pp.downStartEvent, function(event) {
+			this.parent.box.bind(jQuery.pp.downStartEvent + eventName, function(event) {
 				if ( !jQuery.pp.modifierPressed(event) ) {
 					return jQuery.pp.cancelEvent(event);
 				}
 			});
 
-			this.parent.box.bind(jQuery.pp.upEndEvent, function(event) {
+			this.parent.box.bind(jQuery.pp.upEndEvent + eventName, function(event) {
 				if ( supremeHandlerExists.call(self) ) {
 					return true;
 				}
@@ -837,19 +851,23 @@ jQuery.ppCover = function(className, id) {
 					return jQuery.pp.cancelEvent(event);
 				}
 			});
-			
-			addKeyb = addKeyb === false ? false : true;
-			addKeyb && this.addKeybHandlers();
+			if ( undefined !== addKeyb ) {
+				this.hasKeybHandlers = addKeyb;			
+			}
+			if( this.hasKeybHandlers) { this.addKeybHandlers(); }
 			return this;
 		}, 
+		
+		removeElemHandlers: function() {
+			this.parent.elem.unbind(jQuery.pp.downStartEvent + eventName + ' ' + jQuery.pp.upEndEvent + ' ' + eventName + ' ' + jQuery.pp.moveEvent + eventName);
+		},
 		
 		addElemHandlers: function() {
 			if ( !this.parent.elem || 0 === this.parent.elem.length ) {
 				return false;
 			}
 			var self = this;
-
-			self.parent.elem.unbind(eventName);
+			self.removeElemHandlers();
 
 			self.parent.elem.bind(jQuery.pp.downStartEvent + eventName, function(event) {
 				if ( !jQuery.pp.modifierPressed(event) ) {
@@ -893,14 +911,19 @@ jQuery.ppCover = function(className, id) {
 			return this;
 		},
 
+		removeKeybHandlers: function() {
+			var keybTarget = this.parent.input ? this.parent.input : this.parent.box;				
+			if ( !jQuery.pp.touchDevice ) {
+				keybTarget.unbind('keyup' + eventName + ' ' + 'keydown' + eventName);
+			}
+		},
+		
 		addKeybHandlers: function() {
-
 			var self = this,
 				keybTarget = this.parent.input ? this.parent.input : this.parent.box;
 				
 			if ( !jQuery.pp.touchDevice ) {
-
-				keybTarget.unbind(eventName);
+				this.removeKeybHandlers();
 			
 				keybTarget.bind('keyup' + eventName, function(event) {
 					var code = self.settings.keycodeTranslator ? self.settings.keycodeTranslator.call(self, event.which, event) : event.which;					

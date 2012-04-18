@@ -20,21 +20,27 @@
 			verticalPosition: 0.2,
 			horizontalPosition: 0.5,
 			coverClass: 'cover',
+			coverOnClass: 'on',
 			closeButtonSelector: '.button',
 			closeOnClickOutside: false
 		}, options || {} );
 
 
-		if ( $(this.settings.closeButtonSelector).length ) {
-			this.elem = this.box.find(this.settings.closeButtonSelector);		
+		var closeButtons = this.box.find(this.settings.closeButtonSelector);
+		if ( closeButtons.length ) {
+			this.elem = closeButtons;		
 		} else {
 			this.elem = this.box;
 		}
 		
 		this.popupHandler = new jQuery.pp.popupHandler(this, {
-			closeOnClickOutside: this.settings.closeOnClickOutside
+			addEventHandlers: false,
+			closeOnClickOutside: this.settings.closeOnClickOutside,
+			keycodeTranslator: function(code) {
+				return 27 == code ? code : 0;
+			}
 		});		
-		
+
 		this.box.bind('show', function(event) {
 			self.popupHandler.show();
 		}).bind('hide', function(event) {
@@ -51,19 +57,23 @@
 				this.box.trigger('hide');
 			}
 			this.cover = 'cover-' + $.pp.id();
+			var cover = $.ppCover(this.settings.coverClass, this.cover);
 			this.box.ppWithLayout(function() {
 				this.box.ppPosTo(this.settings.horizontalPosition, this.settings.verticalPosition);
 			}, this).css({
 				position: 'absolute', 
 				outline: 'none', 
-				zIndex: $.ppCover(this.settings.coverClass, this.cover).css('zIndex') + 1
+				zIndex: cover.css('zIndex') + 1
 			}).show();
+			cover.addClass(this.settings.coverOnClass);
+			this.popupHandler.addEventHandlers();	
 		},
 
 		hide: function() {
 			$('#' + this.cover).hide().remove();
 			this.cover = false;
 			this.box.hide();
+			this.popupHandler.removeEventHandlers();	
 		},		
 
 		pluginMethods : {
