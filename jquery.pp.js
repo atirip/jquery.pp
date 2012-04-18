@@ -3,6 +3,15 @@
 * Copyright (c) 2012, Priit Pirita, atirip@yahoo.com
 */
 
+var	winMobile = function() {
+	var div = document.createElement('div'),
+		a = div.all || [];
+	div.innerHTML = '<!--[if IEMobile]><br><![endif]-->';
+	return !!a[0];
+};
+
+(function(jQuery){
+
 jQuery.pp = {
 
 	supportsTouches : "createTouch" in document,
@@ -11,7 +20,7 @@ jQuery.pp = {
 	upEndEvent : "createTouch" in document ? "touchend" : "mouseup",
 	
 	// windows mobile is touch device, but does not have touch events!
-	touchDevice : "createTouch" in document ? true : false,
+	touchDevice : "createTouch" in document ? true : winMobile(),
 
 
 	id : function id() {
@@ -642,7 +651,7 @@ jQuery.ppCover = function(className, id) {
 		init:function(parent, options) {
 			try {
 				this.parent = parent;
-				this.settings = $.extend({
+				this.settings = jQuery.extend({
 					addEventHandlers: true,
 					window: false,
 					hideOnScroll: false,
@@ -652,7 +661,7 @@ jQuery.ppCover = function(className, id) {
 					keyUpHandler: function(code, event) { return true; },
 					keyDownHandler: function(code, event) { return true; }
 				}, options || {});
-				this.window = this.settings.window ? $(this.settings.window) : window;
+				this.window = this.settings.window ? jQuery(this.settings.window) : window;
 			} catch(e) {
 				return;
 			}
@@ -682,12 +691,9 @@ jQuery.ppCover = function(className, id) {
 		},
 
 		destroy: function() {
-			$(document).unbind(eventName);
-			$(this.window).unbind(eventName);
-			if ( this.parent.pad ) { this.parent.pad.unbind(eventName); }
-			if ( this.parent.box ) { this.parent.box.unbind(eventName); }
-			if ( this.parent.elem ) { this.parent.elem.unbind(eventName); }
-			if ( !jQuery.pp.touchDevice && this.parent.input ) { this.parent.input.unbind(eventName); }
+			jQuery(document).unbind(eventName);
+			jQuery(this.window).unbind(eventName);
+			this.removeEventHandlers();
 		},
 		
 		toggle: function(event) {
@@ -730,8 +736,8 @@ jQuery.ppCover = function(className, id) {
 		hide: function() {
 			this.parent.hide(null);
 			if ( this.parent.box ) { this.parent.box.blur().removeAttr('tabindex'); }
-			$(document).unbind(eventName);
-			$(this.window).unbind(eventName);
+			jQuery(document).unbind(eventName);
+			jQuery(this.window).unbind(eventName);
 			return this;
 		},
 
@@ -740,7 +746,7 @@ jQuery.ppCover = function(className, id) {
 			var self = this;
 
 			// hide all others possibly up
-			$(document).trigger(jQuery.pp.downStartEvent + eventName);
+			jQuery(document).trigger(jQuery.pp.downStartEvent + eventName);
 
 			if ( !jQuery.pp.touchDevice ) {
 				firstClick = true;
@@ -751,7 +757,7 @@ jQuery.ppCover = function(className, id) {
 
 		
 			if ( self.settings.closeOnClickOutside ) {
-				$(document).bind(jQuery.pp.downStartEvent + eventName, function(event) {
+				jQuery(document).bind(jQuery.pp.downStartEvent + eventName, function(event) {
 					if ( supremeHandlerExists.call(self) ) {
 						return true;
 					}
@@ -763,7 +769,7 @@ jQuery.ppCover = function(className, id) {
 			}
 			
 			if ( self.settings.closeOnClickOutside ) {
-				$(document).bind(jQuery.pp.upEndEvent + eventName, function(event) {
+				jQuery(document).bind(jQuery.pp.upEndEvent + eventName, function(event) {
 					if ( supremeHandlerExists.call(self) ) {
 						return true;
 					}
@@ -775,7 +781,7 @@ jQuery.ppCover = function(className, id) {
 			}
 
 			if ( !jQuery.pp.touchDevice ) {
-				$(document).one(jQuery.pp.moveEvent + eventName, function(event) {
+				jQuery(document).one(jQuery.pp.moveEvent + eventName, function(event) {
 					event = jQuery.pp.normEvent(event);				
 					if ( !mouseMoved && (event.pageX != X || event.pageY != Y) ) {
 						// mouse moved
@@ -786,7 +792,7 @@ jQuery.ppCover = function(className, id) {
 			}
 			
 			if ( self.settings.hideOnSceoll ) {
-				$(self.window).bind('scroll' + eventName, function() {
+				jQuery(self.window).bind('scroll' + eventName, function() {
 					if ( mouseMoved ) {
 						self.hide();
 					}
@@ -794,7 +800,7 @@ jQuery.ppCover = function(className, id) {
 			}
 			
 			if ( self.settings.hideOnResize ) {
-				$(self.window).bind('resize' + eventName, function() {
+				jQuery(self.window).bind('resize' + eventName, function() {
 					self.hide();
 				});
 			}
@@ -824,6 +830,9 @@ jQuery.ppCover = function(className, id) {
 		},
 
 		removeBoxHandlers: function() {
+			if ( !this.parent.box ) {
+				return false;
+			}
 			this.parent.box.unbind(jQuery.pp.downStartEvent + eventName + ' ' + jQuery.pp.upEndEvent + eventName);
 			this.removeKeybHandlers();
 		},
@@ -843,7 +852,7 @@ jQuery.ppCover = function(className, id) {
 				}
 			});
 
-			this.parent.box.bind(jQuery.pp.upEndEvent + eventName, function(event) {
+			this.parent.box.bind(jQuery.pp.upEndEvent, function(event) {
 				if ( supremeHandlerExists.call(self) ) {
 					return true;
 				}
@@ -859,6 +868,9 @@ jQuery.ppCover = function(className, id) {
 		}, 
 		
 		removeElemHandlers: function() {
+			if ( !this.parent.elem || 0 === this.parent.elem.length ) {
+				return false;
+			}
 			this.parent.elem.unbind(jQuery.pp.downStartEvent + eventName + ' ' + jQuery.pp.upEndEvent + ' ' + eventName + ' ' + jQuery.pp.moveEvent + eventName);
 		},
 		
@@ -913,7 +925,7 @@ jQuery.ppCover = function(className, id) {
 
 		removeKeybHandlers: function() {
 			var keybTarget = this.parent.input ? this.parent.input : this.parent.box;				
-			if ( !jQuery.pp.touchDevice ) {
+			if ( !jQuery.pp.touchDevice && keybTarget && keybTarget.length) {
 				keybTarget.unbind('keyup' + eventName + ' ' + 'keydown' + eventName);
 			}
 		},
@@ -984,5 +996,5 @@ jQuery.ppCover = function(className, id) {
 jQuery.pp.register(handler, this[handler]);
 }('popupHandler'); 
 
-
+})(jQuery);
 
