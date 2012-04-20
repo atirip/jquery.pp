@@ -3,14 +3,15 @@
 * Copyright (c) 2012, Priit Pirita, atirip@yahoo.com
 */
 
+
+(function(jQuery){
+
 var	winMobile = function() {
 	var div = document.createElement('div'),
 		a = div.all || [];
 	div.innerHTML = '<!--[if IEMobile]><br><![endif]-->';
 	return !!a[0];
 };
-
-(function(jQuery){
 
 jQuery.pp = {
 
