@@ -40,6 +40,10 @@
 				return 27 == code ? code : 0;
 			}
 		});		
+		this.popupHandler.addBoxHandlers = function() {
+			this.addKeybHandlers();
+			return this;
+		}; 
 
 		this.box.bind('show', function(event) {
 			self.popupHandler.show();
