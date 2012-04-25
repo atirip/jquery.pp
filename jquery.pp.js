@@ -615,17 +615,18 @@ jQuery.fn.ppPositionAsDropbox = function(viewport, pad, options ) {
 	return this;
 };
 
-jQuery.ppCover = function(className, id) {
+jQuery.ppCover = function(className, id, viewport) {
 
-	var cover = $('<div style="position:absolute;" id="' + (id || 'cover-' + $.pp.id()) +'" class="' + (className || '') + '"></div>').appendTo('body'),
-		wd = $(window).ppDimensions(),
-		bd = $('html').ppDimensions();
-
+	var cover = jQuery('<div style="position:absolute;" id="' + (id || 'cover-' + jQuery.pp.id()) +'" class="' + (className || '') + '"></div>').appendTo('body'),
+		bd = jQuery('html').ppDimensions(),
+		winWidth = window.innerWidth,
+		winHeight = window.innerHeight;
+	
 	cover.css({
 		top: 0,
 		left: 0,
-		width: Math.max(wd.width, bd.width),
-		height: Math.max(wd.height, bd.height)	
+		width: viewport ? winWidth : Math.max(winWidth, bd.width),
+		height: viewport ? winHeight : Math.max(winHeight, bd.height)	
 	});
 	return cover;
 };
