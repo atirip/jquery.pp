@@ -617,20 +617,34 @@ jQuery.fn.ppPositionAsDropbox = function(viewport, pad, options ) {
 
 jQuery.ppCover = function(className, id, viewport) {
 
-	var cover = jQuery('<div style="position:absolute;" id="' + (id || 'cover-' + jQuery.pp.id()) +'" class="' + (className || '') + '"></div>').appendTo('body'),
-		bd = jQuery('html').ppDimensions(),
+	var cover = jQuery('<div style="position:absolute;top:0;left:0;" id="' + (id || 'cover-' + jQuery.pp.id()) +'" class="' + (className || '') + '"></div>').appendTo('body'),
+		bodyWidth, bodyHeight,
 		winWidth = window.innerWidth,
-		winHeight = window.innerHeight;
+		winHeight = window.innerHeight,
+		position = $('body').css('position');
 	
-	cover.css({
-		top: 0,
-		left: 0,
-		width: viewport ? winWidth : Math.max(winWidth, bd.width),
-		height: viewport ? winHeight : Math.max(winHeight, bd.height)	
-	});
+	if ( viewport ) {
+		cover.css({
+			width: winWidth,
+			height: winHeight
+		});
+	} else {
+		bodyWidth = Math.max(jQuery('html').outerWidth(true), jQuery('body').outerWidth(true) );
+		bodyHeight = Math.max(jQuery('html').outerHeight(true), jQuery('body').outerHeight(true) );
+		if ( bodyWidth < winWidth || bodyHeight < winHeight || position === 'static' ) {
+			cover.css({
+				width: Math.max(winWidth, bodyWidth),
+				height: Math.max(winHeight, bodyHeight)
+			});
+		} else {
+			cover.css({
+				bottom: 0,
+				right: 0
+			});
+		}
+	}
 	return cover;
 };
-
 
 +function(handler){ this[handler] = (function() {
 
