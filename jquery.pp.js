@@ -496,8 +496,8 @@ jQuery.fn.ppPosRelativeTo = function(p, where, box) {
 
 jQuery.fn.ppPosTo = function(horiz, vert, box) {
 	return this.css({
-		top: this.ppPosRelativeTo(jQuery.pp.verticalProperties, vert).top,
-		left: this.ppPosRelativeTo(jQuery.pp.horizontalProperties, horiz).left
+		top: this.ppPosRelativeTo(jQuery.pp.verticalProperties, vert, box).top,
+		left: this.ppPosRelativeTo(jQuery.pp.horizontalProperties, horiz, box).left
 	});
 };
 
@@ -615,36 +615,37 @@ jQuery.fn.ppPositionAsDropbox = function(viewport, pad, options ) {
 	return this;
 };
 
+
 jQuery.ppCover = function(className, id, viewport) {
 
-	var cover = jQuery('<div style="position:absolute;top:0;left:0;" id="' + (id || 'cover-' + jQuery.pp.id()) +'" class="' + (className || '') + '"></div>').appendTo('body'),
-		bodyWidth, bodyHeight,
-		winWidth = window.innerWidth,
-		winHeight = window.innerHeight,
-		position = $('body').css('position');
-	
 	if ( viewport ) {
+		return jQuery('<div style="width:100%;height:100%;position:fixed;top:0;left:0;" id="' + (id || 'cover-' + jQuery.pp.id()) +'" class="' + (className || '') + '"></div>').appendTo('body');
+	} 
+
+	var cover = jQuery('<div style="position:absolute;top:0;left:0;" id="' + (id || 'cover-' + jQuery.pp.id()) +'" class="' + (className || '') + '"></div>').appendTo('body'),
+		html = jQuery('html'),
+		body = jQuery('body'),		
+		bodyWidth, bodyHeight,
+		winWidth = Math.max(html[0].scrollWidth, body[0].scrollWidth);
+		winHeight = Math.max(html[0].scrollHeight, body[0].scrollHeight);
+		position = $('body').css('position');
+
+	bodyWidth = Math.max(jQuery('html').outerWidth(true), jQuery('body').outerWidth(true) );
+	bodyHeight = Math.max(jQuery('html').outerHeight(true), jQuery('body').outerHeight(true) );
+	if ( bodyWidth < winWidth || bodyHeight < winHeight || position === 'static' ) {
 		cover.css({
-			width: winWidth,
-			height: winHeight
+			width: Math.max(winWidth, bodyWidth),
+			height: Math.max(winHeight, bodyHeight)
 		});
 	} else {
-		bodyWidth = Math.max(jQuery('html').outerWidth(true), jQuery('body').outerWidth(true) );
-		bodyHeight = Math.max(jQuery('html').outerHeight(true), jQuery('body').outerHeight(true) );
-		if ( bodyWidth < winWidth || bodyHeight < winHeight || position === 'static' ) {
-			cover.css({
-				width: Math.max(winWidth, bodyWidth),
-				height: Math.max(winHeight, bodyHeight)
-			});
-		} else {
-			cover.css({
-				bottom: 0,
-				right: 0
-			});
-		}
+		cover.css({
+			bottom: 0,
+			right: 0
+		});
 	}
 	return cover;
 };
+
 
 +function(handler){ this[handler] = (function() {
 

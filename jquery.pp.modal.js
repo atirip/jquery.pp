@@ -19,6 +19,7 @@
 		this.settings = jQuery.extend({
 			verticalPosition: 0.2,
 			horizontalPosition: 0.5,
+			positionFixed: false,
 			coverClass: 'cover',
 			coverOnClass: 'on',
 			closeButtonSelector: '.button',
@@ -32,9 +33,12 @@
 		} else {
 			this.elem = this.box;
 		}
+
 		
 		this.popupHandler = new jQuery.pp.popupHandler(this, {
 			addEventHandlers: false,
+			hideOnScroll: false,
+			hideOnResize: false,
 			closeOnClickOutside: this.settings.closeOnClickOutside,
 			keycodeTranslator: function(code) {
 				return 27 == code ? code : 0;
@@ -61,11 +65,16 @@
 				this.box.trigger('hide');
 			}
 			this.cover = 'cover-' + $.pp.id();
-			var cover = $.ppCover(this.settings.coverClass, this.cover);
+			var cover = $.ppCover(this.settings.coverClass, this.cover, this.settings.positionFixed);
 			this.box.ppWithLayout(function() {
-				this.box.ppPosTo(this.settings.horizontalPosition, this.settings.verticalPosition);
+				var d = $(window).ppDimensions();
+				if (this.settings.positionFixed) {
+					d.left = 0;
+					d.top = 0;
+				}
+				this.box.ppPosTo(this.settings.horizontalPosition, this.settings.verticalPosition, d);
 			}, this).css({
-				position: 'absolute', 
+				position: this.settings.positionFixed && !jQuery.pp.touchDevice ? 'fixed' : 'absolute', 
 				outline: 'none', 
 				zIndex: cover.css('zIndex') + 1
 			}).show();
