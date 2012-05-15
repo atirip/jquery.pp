@@ -674,6 +674,7 @@ jQuery.ppCover = function(className, id, viewport) {
 					hideOnScroll: false,
 					hideOnResize: true,
 					closeOnClickOutside: true,
+					keybTarget: undefined,
 					keycodeTranslator: function(code, event) { return code == 32 ? 13 : code; },
 					keyUpHandler: function(code, event) { return true; },
 					keyDownHandler: function(code, event) { return true; }
@@ -949,8 +950,8 @@ jQuery.ppCover = function(className, id, viewport) {
 		
 		addKeybHandlers: function() {
 			var self = this,
-				keybTarget = this.parent.input ? this.parent.input : this.parent.box;
-				
+				keybTarget = $(this.settings.keybTarget) || (this.parent.input ? this.parent.input : this.parent.box);
+			
 			if ( !jQuery.pp.touchDevice ) {
 				this.removeKeybHandlers();
 			

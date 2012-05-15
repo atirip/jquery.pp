@@ -39,6 +39,7 @@
 			addEventHandlers: false,
 			hideOnScroll: false,
 			hideOnResize: false,
+			keybTarget: document,
 			closeOnClickOutside: this.settings.closeOnClickOutside,
 			keycodeTranslator: function(code) {
 				return 27 == code ? code : 0;
