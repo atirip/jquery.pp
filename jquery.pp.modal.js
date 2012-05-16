@@ -66,10 +66,10 @@
 				this.box.trigger('hide');
 			}
 			this.cover = 'cover-' + $.pp.id();
-			var cover = $.ppCover(this.settings.coverClass, this.cover, this.settings.positionFixed);
+			var cover = $[this.settings.positionFixed ? 'ppCoverFixed' : 'ppCoverFull'](this.settings.coverClass, this.cover);
 			this.box.ppWithLayout(function() {
 				var d = $(window).ppDimensions();
-				if (this.settings.positionFixed) {
+				if (this.settings.positionFixed && !jQuery.pp.touchDevice ) {
 					d.left = 0;
 					d.top = 0;
 				}

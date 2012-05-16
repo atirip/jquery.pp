@@ -615,35 +615,20 @@ jQuery.fn.ppPositionAsDropbox = function(viewport, pad, options ) {
 	return this;
 };
 
+// cover viewport position:fixed
+jQuery.ppCoverFixed = function(className, id) {
+	return jQuery('<div style="width:100%;height:100%;position:fixed;top:0;left:0;" id="' + (id || 'cover-' + jQuery.pp.id()) +'" class="' + (className || '') + '"></div>').appendTo('body');
+};
 
-jQuery.ppCover = function(className, id, viewport) {
+// cover viewport
+jQuery.ppCoverViewport = function(className, id) {
+	var dim = $(window).ppDimensions();
+	return jQuery('<div style="position:absolute;top:'+dim.top+'px;left:'+dim.left+'px;height:'+dim.height+'px;width:'+dim.width+'px" id="' + (id || 'cover-' + jQuery.pp.id()) +'" class="' + (className || '') + '"></div>').appendTo('body');
+};
 
-	if ( viewport ) {
-		return jQuery('<div style="width:100%;height:100%;position:fixed;top:0;left:0;" id="' + (id || 'cover-' + jQuery.pp.id()) +'" class="' + (className || '') + '"></div>').appendTo('body');
-	} 
-
-	var cover = jQuery('<div style="position:absolute;top:0;left:0;" id="' + (id || 'cover-' + jQuery.pp.id()) +'" class="' + (className || '') + '"></div>').appendTo('body'),
-		html = jQuery('html'),
-		body = jQuery('body'),		
-		bodyWidth, bodyHeight,
-		winWidth = Math.max(html[0].scrollWidth, body[0].scrollWidth);
-		winHeight = Math.max(html[0].scrollHeight, body[0].scrollHeight);
-		position = $('body').css('position');
-
-	bodyWidth = Math.max(jQuery('html').outerWidth(true), jQuery('body').outerWidth(true) );
-	bodyHeight = Math.max(jQuery('html').outerHeight(true), jQuery('body').outerHeight(true) );
-	if ( bodyWidth < winWidth || bodyHeight < winHeight || position === 'static' ) {
-		cover.css({
-			width: Math.max(winWidth, bodyWidth),
-			height: Math.max(winHeight, bodyHeight)
-		});
-	} else {
-		cover.css({
-			bottom: 0,
-			right: 0
-		});
-	}
-	return cover;
+// cover full page
+jQuery.ppCoverFull = function(className, id) {
+	return jQuery('<div style="position:absolute;top:0;left:0;height:'+Math.max($(window).height(), $(document).height())+'px;width:'+Math.max($(window).width(), $(document).width())+'px" id="' + (id || 'cover-' + jQuery.pp.id()) +'" class="' + (className || '') + '"></div>').appendTo('body');
 };
 
 
@@ -653,6 +638,7 @@ jQuery.ppCover = function(className, id, viewport) {
 		eventName = '.pp',
 		mouseMoved = false, 
 		firstClick = false,
+		scrollTop = -1,
 		justScrolled = false;
 
 	function constructor() {
@@ -756,7 +742,37 @@ jQuery.ppCover = function(className, id, viewport) {
 			if ( this.parent.box ) { this.parent.box.blur().removeAttr('tabindex'); }
 			jQuery(document).unbind(eventName);
 			jQuery(this.window).unbind(eventName);
+			this.scrollBack();
+			scrollTop = -1;
+			this.removeBlurHandlers();
 			return this;
+		},
+
+		scrollBack: function() {
+			if ( scrollTop > -1 && scrollTop != $(window).scrollTop() ) {
+				$(window).scrollTop(scrollTop);
+			}
+		},
+
+		addBlurHandlers: function() {
+			if ( jQuery.pp.touchDevice && this.parent.box ) { 
+				var inputs = this.parent.box.find('input, textarea'),
+					self = this;
+				inputs.bind('blur' + eventName, function() {
+					setTimeout( function() {
+						if ( !inputs.is(":focus") ) {
+							self.scrollBack();
+						}
+					}, 200);
+					
+				});
+			}
+		},
+
+		removeBlurHandlers: function() {
+			if ( jQuery.pp.touchDevice && this.parent.box ) { 
+				this.parent.box.find('input, textarea').unbind('blur' + eventName);
+			}
 		},
 
 		show: function(event) {
@@ -832,6 +848,8 @@ jQuery.ppCover = function(className, id, viewport) {
 			if ( !this.parent.input ) {
 				this.parent.box.attr('tabindex', 0).focus();
 			}
+			scrollTop = $(window).scrollTop();
+			this.addBlurHandlers();
 			return this;
 		},
 
