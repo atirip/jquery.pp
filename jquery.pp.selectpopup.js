@@ -112,7 +112,7 @@
 					return;
 				}
 				this.pad.attr('data-value', value);
-				this.display( value, selected.text(), 1);
+				this.display( value, selected.html(), 1);
 			}
 		},
 
@@ -134,7 +134,7 @@
 				this.pad.trigger('change');
 			}
 			if ( this.settings.target ) {
-				$(this.settings.target).text( text );
+				$(this.settings.target).html( text );
 			}
 		},
 	
