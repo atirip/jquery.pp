@@ -45,6 +45,11 @@
 			self.setValue( args[0], self.settings.callback, args.slice(1) );
 		});			
 
+		this.container.bind('option', function(event) {
+			var args = Array.prototype.slice.call(arguments, 1);
+			return self.getOption.apply(self, args);
+		});			
+
 		this.setValue(this.settings.value);
 	}
 
@@ -146,6 +151,11 @@
 			callback && callback(val, params);
 		},
 
+		
+		getOption: function(name) {
+			return this.settings[name];
+		},
+		
 		pluginMethods : {
 			init : function( constructor, options ) {
 				options = options || {};
@@ -158,13 +168,27 @@
 			set: function() { 
 				var args = Array.prototype.slice.call(arguments);
 				return this.each(function() {
-					$(this).trigger('value',  args);
+					$(this).triggerHandler('value',  args);
 				});
 			},
 
-			get: function() { 
+			get: function() {
 				return $(this).attr('data-value');
+			},
+			
+			
+			// some jquery ui slider compatibility
+			value: function() {
+				var args = Array.prototype.slice.call(arguments);
+				return this.each(function() {
+					$(this).triggerHandler('value',  args);
+				});
+			},
+
+			option: function(name) {
+				return $(this).triggerHandler('option', name);
 			}
+
 			
 		}
 
